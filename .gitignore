@@ -1,0 +1,9 @@
+/logs
+/server
+/www/loved/data.json
+/www/outdated-osu-wiki
+
+# Composer
+/vendor
+composer.phar
+composer-installer
