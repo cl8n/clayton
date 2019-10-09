@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="stylesheet" href="/css/index.css">
+        <title>clayton</title>
+    </head>
+    <body>
+        <div class="content">
+            <p>
+                clayton
+            </p>
+            <p class="links">
+                <a href="https://github.com/cl8n">GitHub</a>
+            </p>
+        </div>
+
+        <img class="bg-image" src="/images/bg.png"></img>
+        <img class="bird-image" src="/images/wart.png" style="bottom: 0px; right: 58px; width: 66px; transition: bottom 1s ease-out 0s, right 1s linear 0s, transform 0.5s ease-in-out 0s;"></img>
+
+        <script>
+            const bird = document.getElementsByClassName("bird-image")[0];
+            var direction = "left";
+            const wait = 1200;
+            const speed = 1.2;
+            var height;
+            
+            function jump(skipHeightCalc = false) {
+              if (!skipHeightCalc) {
+                height = 100 + Math.random() * 100;
+                
+                if (direction == "left" && parseInt(bird.style.right) + parseInt(bird.style.width) + height * 2 > window.innerWidth) {
+                  bird.style.transform = "scaleX(-1)";
+                  direction = "right";
+                  return;
+                }
+                
+                if (direction == "right" && parseInt(bird.style.right) - height * 2 < 0) {
+                  bird.style.transform = "scaleX(1)";
+                  direction = "left";
+                  return;
+                }
+              }
+              
+              bird.style.transition = bird.style.transition
+                .replace(/right [\d\.]+s linear/, "right " + (height / 150 / speed) + "s linear")
+                .replace(/bottom [\d\.]+s/, "bottom " + (height / 300 / speed) + "s");
+              
+              bird.style.bottom = height + "px";
+              bird.style.right = parseInt(bird.style.right) + height * 2 * (direction == "left" ? 1 : -1) + "px";
+            }
+            
+            bird.addEventListener("transitionend", function (e) {
+              switch (e.propertyName) {
+                case "transform":
+                  setTimeout(jump, wait, true);
+                  break;
+                case "bottom":
+                  if (parseInt(bird.style.bottom) == 0) {
+                    bird.style.transition = bird.style.transition.replace(" ease-in ", " ease-out ");
+                    setTimeout(jump, wait);
+                  } else {
+                    bird.style.transition = bird.style.transition.replace(" ease-out ", " ease-in ");
+                    bird.style.bottom = 0;
+                  }
+                  break;
+              }
+            }, false);
+            
+            setTimeout(jump, wait);
+        </script>
+    </body>
+</html>
