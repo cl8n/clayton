@@ -16,3 +16,10 @@ $container['logger'] = function ($c) {
 
     return $logger;
 };
+
+$container['notFoundHandler'] = function () {
+    return function ($request, $response) {
+        $response = new \Slim\Http\Response(404);
+        return $response->write("Not found");
+    };
+};
