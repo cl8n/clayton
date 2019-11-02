@@ -2,6 +2,7 @@
 /server
 /www/loved/data.json
 /www/outdated-osu-wiki
+/www/void
 
 # Composer
 /vendor
