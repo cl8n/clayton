@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>gimmedatsong</title>
+
+        <script>
+            function getSong() {
+                var videoId = document.querySelector('input').value;
+                videoId = videoId.match(/(.*?)(^|\/|v=)([a-z0-9_-]{11})(.*)?/i);
+                if (videoId === null)
+                    return;
+
+                window.location.href = '/gimmedatsong/' + encodeURIComponent(videoId[3]);
+            }
+        </script>
+    </head>
+    <body>
+        <label>video id: </label>
+        <input type="text">
+        <button onclick="getSong()">gimme dat song</button>
+    </body>
+</html>
