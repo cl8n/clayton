@@ -1,0 +1,39 @@
+<html>
+<head>
+  <title>void</title>
+  <style>
+    body {
+      background-color: black;
+      margin: 0;
+      padding-top: 40vh;
+    }
+
+    p {
+      animation: fade 10s linear;
+      animation-fill-mode: both;
+      color: white;
+      font-family: monospace;
+      text-align: center;
+    }
+
+    p:nth-child(2) {
+      animation: expand 9s ease-in-out, fade 10s linear;
+      animation-fill-mode: both;
+      font-style: italic;
+    }
+
+    @keyframes expand {
+      to { letter-spacing: 1em; }
+    }
+
+    @keyframes fade {
+      to { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <p>Let go your earthly tether.</p>
+  <p>Enter the void.</p>
+  <p>Empty and become wind.</p>
+</body>
+</html>
