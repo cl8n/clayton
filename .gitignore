@@ -1,9 +1,9 @@
 /logs
 /server
+/www/digitalrealm.txt
 /www/list
 /www/loved/data.json
-/www/outdated-osu-wiki
-/www/void
+/www/osu-wiki-status
 
 # Composer
 /vendor
