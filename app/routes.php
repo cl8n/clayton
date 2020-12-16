@@ -3,18 +3,6 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-$app->get('/', function (Request $request, Response $response) {
-    return $this->renderer->render($response, 'index.phtml');
-});
-
-$app->get('/remove-tapir', function (Request $request, Response $response) {
-    return $this->renderer->render($response, 'remove-tapir.phtml');
-});
-
-$app->get('/gimmedatsong', function (Request $request, Response $response) {
-    return $this->renderer->render($response, 'gimmedatsong.phtml');
-});
-
 $app->get('/gimmedatsong/{videoId}', function (Request $request, Response $response, $args) {
     if (!preg_match('/^[a-z0-9_-]{11}$/i', $args['videoId'])) {
         return 'invalid video id';
