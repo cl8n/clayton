@@ -5,6 +5,164 @@
         <link rel="stylesheet" href="/css/main.css">
         <link rel="stylesheet" href="/css/index.css">
         <title>clayton</title>
+        <script>
+            var cv, ctx, cw, ch, time, birds;
+
+            window.onload = init;
+            window.onresize = resize;
+
+            function init() {
+                cv = document.getElementById('_bird');
+                ctx = cv.getContext('2d');
+                time = performance.now();
+
+                resize();
+
+                birds = [
+                    new Bird('/images/warttraw.png', 33, 29, {
+                        jumpSpeedMult: 1.5,
+                        legOh: 2,
+                        minJumpWait: 1000,
+                        maxJumpWait: 3000,
+                        minJumpHeight: 100,
+                        maxJumpHeight: 250,
+                        scale: 2,
+                        speed: 0.25
+                    }),
+                    new Bird('/images/toasttsaot.png', 33, 35, {
+                        jumpSpeedMult: 1.75,
+                        legOh: 2,
+                        minJumpWait: 500,
+                        maxJumpWait: 2000,
+                        minJumpHeight: 150,
+                        maxJumpHeight: 300,
+                        scale: 2,
+                        speed: 0.2
+                    })
+                ];
+
+                animate();
+            }
+
+            function resize() {
+                cv.width = cw = innerWidth;
+                cv.height = ch = innerHeight;
+
+                ctx.imageSmoothingEnabled = false;
+            }
+
+            function animate() {
+                var now = performance.now();
+                var elapsed = now - time;
+
+                ctx.clearRect(0, 0, cw, ch);
+                birds.forEach(function (bird) { bird.update(now, elapsed); });
+
+                time = now;
+                requestAnimationFrame(animate);
+            }
+
+            function Bird(src, w, h, traits) {
+                Object.assign(this, traits);
+
+                this.img = new Image();
+                this.img.src = src;
+                this.ow = w;
+                this.oh = h;
+                this.w = w * this.scale;
+                this.h = h * this.scale;
+                this.legH = this.legOh * this.scale;
+
+                this.x = randBetween(0, cw - this.w);
+                this.y = 0; // 0 at floor
+                this.dir = Math.random() > 0.5 ? 1 : -1;
+                this.refl = this.dir != 1;
+                this.sitting = false;
+                this.moving = false;
+                this.jumping = false;
+                this.jump = null;
+                this.queuedJump = null;
+
+                this.update = function (now, elapsed) {
+                    if (this.queuedJump == null) {
+                        if (!this.jumping) {
+                            this.queuedJump = {
+                                wait: randBetween(this.minJumpWait, this.maxJumpWait),
+                                height: randBetween(this.minJumpHeight, this.maxJumpHeight),
+                            };
+                        }
+                    } else {
+                        this.queuedJump.wait -= elapsed;
+
+                        if (this.queuedJump.wait <= 0) {
+                            var startTime = now + this.queuedJump.height * 2.5;
+                            var endTime = startTime + this.queuedJump.height * 5 + randBetween(-100, 100);
+
+                            this.jump = {
+                                startTime: startTime,
+                                midTime: (startTime + endTime) / 2,
+                                endTime: endTime,
+                                height: this.queuedJump.height,
+                            };
+                            this.jumping = true;
+                            this.queuedJump = null;
+                        }
+                    }
+
+                    if (this.jumping) {
+                        if (now < this.jump.startTime) {
+                            this.sitting = true;
+                            this.moving = false;
+                        } else if (now >= this.jump.endTime) {
+                            this.sitting = false;
+                            this.moving = false;
+                            this.jumping = false;
+                            this.jump = null;
+                            this.y = 0;
+                        } else {
+                            this.sitting = false;
+                            this.moving = true;
+
+                            this.y = this.jump.height * (1 - Math.pow(Math.abs(now - this.jump.midTime) / (this.jump.midTime - this.jump.startTime), 2));
+                        }
+                    }
+
+                    if (this.moving) {
+                        var dx = this.dir * elapsed * this.speed;
+
+                        if (this.jumping) {
+                            dx *= this.jumpSpeedMult;
+                        }
+
+                        this.x += dx;
+                    }
+
+                    if (this.x <= 0) {
+                        this.x = 0;
+                        this.dir = 1;
+                        this.refl = false;
+                    } else if (this.x >= cw - this.w) {
+                        this.x = cw - this.w;
+                        this.dir = -1;
+                        this.refl = true;
+                    }
+
+                    this._draw();
+                };
+
+                this._draw = function () {
+                    ctx.drawImage(
+                        this.img,
+                        this.refl * this.ow, 0, this.ow, this.oh - this.sitting * this.legOh,
+                        this.x, ch - this.h - this.y + this.sitting * this.legH, this.w, this.h - this.sitting * this.legH
+                    );
+                };
+            }
+
+            function randBetween(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+        </script>
     </head>
     <body>
         <div class="content">
@@ -17,58 +175,6 @@
         </div>
 
         <img class="bg-image" src="/images/bg.png"></img>
-        <img class="bird-image" src="/images/wart.png" style="bottom: 0px; right: 58px; width: 66px; transition: bottom 1s ease-out 0s, right 1s linear 0s, transform 0.5s ease-in-out 0s;"></img>
-
-        <script>
-            const bird = document.getElementsByClassName("bird-image")[0];
-            var direction = "left";
-            const wait = 1200;
-            const speed = 1.2;
-            var height;
-            
-            function jump(skipHeightCalc = false) {
-              if (!skipHeightCalc) {
-                height = 100 + Math.random() * 100;
-                
-                if (direction == "left" && parseInt(bird.style.right) + parseInt(bird.style.width) + height * 2 > window.innerWidth) {
-                  bird.style.transform = "scaleX(-1)";
-                  direction = "right";
-                  return;
-                }
-                
-                if (direction == "right" && parseInt(bird.style.right) - height * 2 < 0) {
-                  bird.style.transform = "scaleX(1)";
-                  direction = "left";
-                  return;
-                }
-              }
-              
-              bird.style.transition = bird.style.transition
-                .replace(/right [\d\.]+s linear/, "right " + (height / 150 / speed) + "s linear")
-                .replace(/bottom [\d\.]+s/, "bottom " + (height / 300 / speed) + "s");
-              
-              bird.style.bottom = height + "px";
-              bird.style.right = parseInt(bird.style.right) + height * 2 * (direction == "left" ? 1 : -1) + "px";
-            }
-            
-            bird.addEventListener("transitionend", function (e) {
-              switch (e.propertyName) {
-                case "transform":
-                  setTimeout(jump, wait, true);
-                  break;
-                case "bottom":
-                  if (parseInt(bird.style.bottom) == 0) {
-                    bird.style.transition = bird.style.transition.replace(" ease-in ", " ease-out ");
-                    setTimeout(jump, wait);
-                  } else {
-                    bird.style.transition = bird.style.transition.replace(" ease-out ", " ease-in ");
-                    bird.style.bottom = 0;
-                  }
-                  break;
-              }
-            }, false);
-            
-            setTimeout(jump, wait);
-        </script>
+        <canvas id="_bird" style="position: fixed;"></canvas>
     </body>
 </html>

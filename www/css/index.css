@@ -48,13 +48,3 @@ a, .discord-copy {
   image-rendering: -o-crisp-edges;
   image-rendering: pixelated;
 }
-
-.bird-image {
-  position: fixed;
-  height: 58px;
-  -ms-interpolation-mode: nearest-neighbor;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: -o-crisp-edges;
-  image-rendering: pixelated;
-}
