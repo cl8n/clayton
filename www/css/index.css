@@ -1,50 +1,42 @@
-@font-face {
-    font-family: Proggy;
-    src: url(../fonts/ProggyClean.ttf);
-}
-
 body {
   background-color: rgb(216, 213, 124);
-  font-family: Proggy, monospace;
 }
 
-.content {
-  text-align: center;
-  height: 4em;
-  font-size: 48px;
-  color: rgb(42, 43, 37);
+.pixelated {
+  -ms-interpolation-mode: nearest-neighbor;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+.img-title {
+  opacity: 0.75;
+  margin-bottom: 18px;
+}
+
+.img-link {
+  display: block;
+  opacity: 0.5;
+}
+
+.flx {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   position: absolute;
   top: 0;
+  right: 0;
   bottom: 0;
   left: 0;
-  right: 0;
-  margin: auto;
 }
 
-.content > .links {
-  color: #697447;
-  font-size: 40px;
-}
-
-p + p {
-  margin-top: 0.5em;
-}
-
-a, .discord-copy {
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-}
-
-.bg-image {
+.table {
   position: fixed;
   bottom: 0;
   right: 0;
-  width: 306px;
-  height: 156px;
-  -ms-interpolation-mode: nearest-neighbor;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: -o-crisp-edges;
-  image-rendering: pixelated;
 }
